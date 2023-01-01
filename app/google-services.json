@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1012009201600",
+    "project_id": "dodogram-1b19c",
+    "storage_bucket": "dodogram-1b19c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012009201600:android:13227d51c445e49328e225",
+        "android_client_info": {
+          "package_name": "com.example.dodogram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012009201600-2p7o8tghse08oc0f3e00j22qc8475q7t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKHiW7Hs0sPbWQnNfsZWrDPFYvO9XnCb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012009201600-2p7o8tghse08oc0f3e00j22qc8475q7t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
