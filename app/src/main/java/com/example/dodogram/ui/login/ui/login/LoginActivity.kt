@@ -33,11 +33,8 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-
+import com.facebook.FacebookSdk
+import com.google.firebase.auth.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -270,6 +267,7 @@ class LoginActivity : AppCompatActivity() {
         val passwordLogIn = binding.password as TextInputEditText
         val emailRegister = binding.etNewUserUsername as TextInputEditText
         val passwordRegister = binding.etNewUserPassword as TextInputEditText
+        val userName = binding.etNewUserName
         val login = binding.login as MaterialButton
         val btnCreateAcc = binding.btnCreateAcc as MaterialButton
         val loading = binding.loading
@@ -292,8 +290,6 @@ class LoginActivity : AppCompatActivity() {
         btnGoogleSignIn?.setOnClickListener {
             oneTapSignUp()
         }
-
-
 
         register?.setOnClickListener {
             logInPage?.visibility = View.GONE
@@ -347,6 +343,11 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        userName?.addTextChangedListener {
+            if (it.isNullOrEmpty()) {
+                userName.error = "Please enter your name"
+            }
+        }
 
         emailRegister.addTextChangedListener{
             if (!isUserNameValid(it.toString())){
@@ -366,6 +367,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+
         login.setOnClickListener {
             if (emailLogIn.text.isNullOrEmpty()){
                 emailLogIn.error = "Please enter email"
@@ -380,9 +382,20 @@ class LoginActivity : AppCompatActivity() {
         }
 
         btnCreateAcc.setOnClickListener {
-            if (emailRegister.text.isNullOrEmpty() && passwordRegister.text.isNullOrEmpty()){
+
+            if (userName?.text.isNullOrEmpty()){
+                userName?.error = "Please enter your name"
+            }
+            if (emailRegister.text.isNullOrEmpty()){
+                emailRegister.error = "Please enter email"
+            }
+            if (passwordRegister.text.isNullOrEmpty()){
+                binding.textInputPassword?.endIconMode = TextInputLayout.END_ICON_NONE
+                passwordRegister.error = "Please enter password"
+            }
+            if (!emailRegister.text.isNullOrEmpty() && !passwordRegister.text.isNullOrEmpty() && !userName?.text.isNullOrEmpty()){
                 registerNewUser(emailRegister.text.toString(),passwordRegister.text.toString())
-            }else Log.i("tag","email or password left empty in register Page")
+            }
         }
 
 
