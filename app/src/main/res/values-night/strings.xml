@@ -14,4 +14,8 @@
     <string name="already_have_an_account">Already have an account? </string>
     <string name="google">Google</string>
     <string name="facebook">Facebook</string>
+
+    <string name="facebook_app_id">695192802321178</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">20447d78f08abc54bf4f41748cd8a2ae</string>
 </resources>

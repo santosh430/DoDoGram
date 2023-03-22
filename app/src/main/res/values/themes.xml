@@ -2,15 +2,45 @@
     <!-- Base application theme. -->
     <style name="Theme.DoDoGram" parent="Theme.Material3.Light">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">#2196F3</item>
+        <item name="colorPrimaryVariant">#1976D2</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">#03A9F4</item>
+        <item name="colorSecondaryVariant">#03A9F4</item>
+        <item name="colorOnSecondary">#757575</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/purple_200</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">#212121</item>
+        <item name="dividerColor">#BDBDBD</item>
+        <item name="colorSurface">?attr/colorPrimaryVariant</item>
+        <item name="bottomNavigationStyle">@style/customBottomNav</item>
+        <item name="navigationViewStyle">@style/customNavigationViewStyle</item>
+        <item name="actionBarTheme">@style/Theme.DoDoGram.ActionBar</item>
+        <item name="appBarLayoutStyle">@style/Widget.Design.AppBarLayout</item>
+
+    </style>
+
+    <style name="customNavigationViewStyle" parent="Widget.Material3.NavigationView">
+        <item name="android:background">@color/white</item>
+        <item name="itemIconTint">?attr/colorPrimary</item>
+        <item name="itemActiveIndicatorStyle">@color/lightPrimaryColor</item>
+<!--        <item name="itemShapeFillColor">@color/lightPrimaryColor</item>-->
+    </style>
+
+
+
+    <style name="Theme.DoDoGram.NoActionBar" parent="Theme.DoDoGram">
+        <item name="actionBarTheme">@style/Theme.AppCompat.Light.NoActionBar</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="Theme.DoDoGram.ActionBar" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="windowActionBar">true</item>
+    </style>
+
+    <style name="customBottomNav" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="background">?android:attr/windowBackground</item>
     </style>
 </resources>

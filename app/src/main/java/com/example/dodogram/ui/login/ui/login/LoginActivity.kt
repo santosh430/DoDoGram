@@ -20,9 +20,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.dodogram.enums.LoginMode
 import com.example.dodogram.MainActivity
 import com.example.dodogram.R
 import com.example.dodogram.databinding.ActivityLoginBinding
+import com.example.dodogram.ui.login.data.UserLogInMode
+import com.example.dodogram.ui.login.data.model.LoginPageState
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginClient
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -33,8 +42,8 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.facebook.FacebookSdk
 import com.google.firebase.auth.*
+import java.util.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,9 +53,12 @@ class LoginActivity : AppCompatActivity() {
     private var oneTapClient: SignInClient? = null
     private val signInRequest: BeginSignInRequest? = null
     private var signUpRequest: BeginSignInRequest? = null
+    private var callbackManager:CallbackManager? = null
     private var showOneTapUI = true
-    private var isLoginUIVisible = true
-    private var isRegisterUIVisible = false
+
+    private val facebookResultContracts = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        it.resultCode
+    }
 
     private var logInResultHandler = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
@@ -121,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
             ) // Automatically sign in when exactly one credential is retrieved.
             .setAutoSelectEnabled(true)
             .build()
-        oneTapClient?.beginSignIn(signUpRequest!!)
+        oneTapClient?.beginSignIn(signUpRequest ?: return)
             ?.addOnSuccessListener(
                 this
             ) { result ->
@@ -175,23 +187,25 @@ class LoginActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithCredential:success")
-                            val user = firebaseAuth!!.currentUser
-                            updateUI(user)
+                            val user = firebaseAuth?.currentUser
+                            updateUI(user, UserLogInMode.SignIn(LoginMode.GOOGLE))
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithCredential:failure", task.exception)
 //                            updateUI(null)
                         }
                     }
-
-                    private fun updateUI(user: FirebaseUser?) {
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                        finish()
-                    }
                 })
         }
     }
 
+    private fun updateUI(user: FirebaseUser?,loginMode: UserLogInMode) {
+        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+        intent.putExtra("loginData",user)
+        intent.putExtra("loginMode",loginMode)
+        startActivity(intent)
+        finish()
+    }
 
     //Login user
     private fun logInUser(email: String, password: String) {
@@ -207,9 +221,9 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("TAG", "signInWithEmail:success")
-                        //                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                        finish()
+                        //FirebaseUser user = firebaseAuth.getCurrentUser();
+                        val user = firebaseAuth?.currentUser
+                        updateUI(user,UserLogInMode.SignIn(LoginMode.EMAIL))
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w("TAG", "signInWithEmail:failure", task.exception)
@@ -237,12 +251,7 @@ class LoginActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "createUserWithEmail:success")
                     val user = firebaseAuth?.currentUser
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "" + user + "Successfully Registered",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    startActivity(Intent(this,MainActivity::class.java))
+                    updateUI(user,UserLogInMode.Register(LoginMode.EMAIL))
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("TAG", "createUserWithEmail:failure", task.exception)
@@ -254,6 +263,13 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Pass the activity result back to the Facebook SDK
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -262,6 +278,12 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        if (firebaseAuth?.currentUser != null){
+            startActivity(Intent(this,MainActivity::class.java))
+            finish()
+        }
 
         val emailLogIn = binding.email as TextInputEditText
         val passwordLogIn = binding.password as TextInputEditText
@@ -270,15 +292,18 @@ class LoginActivity : AppCompatActivity() {
         val userName = binding.etNewUserName
         val login = binding.login as MaterialButton
         val btnCreateAcc = binding.btnCreateAcc as MaterialButton
-        val loading = binding.loading
+        val loaderLoginPage = binding.pbLogin
+        val loaderRegisterPage = binding.pbRegister
         val register = binding.tvRegisterLogin
         val signIn = binding.tvSignIn
         val logInPage = binding.clLoginExistingUser
         val registerPage = binding.clRegisterNewUser
         val btnGoogleSignIn = binding.btnGoogleSignIn
         val btnFacebookSignIn = binding.btnFacebookSignIn
+        var isLoginPageVisible = true
+        var isRegisterPageVisible = false
 
-        firebaseAuth = FirebaseAuth.getInstance()
+
         oneTapClient = Identity.getSignInClient(this)
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
@@ -287,24 +312,43 @@ class LoginActivity : AppCompatActivity() {
 
         login.isEnabled = true
         btnCreateAcc.isEnabled = true
+
         btnGoogleSignIn?.setOnClickListener {
-            oneTapSignUp()
+            if (isLoginPageVisible){
+                loaderLoginPage.visibility = View.VISIBLE
+                oneTapSignUp()
+            }else{
+                loaderRegisterPage?.visibility = View.VISIBLE
+            }
         }
 
+        loginViewModel.loginRegisterUiState.observe(this, Observer {
+
+            if (it.isLoginPageVisible){
+                isLoginPageVisible = true
+                isRegisterPageVisible = false
+                registerPage?.visibility = View.GONE
+                logInPage?.visibility = View.VISIBLE
+            }else{
+                isRegisterPageVisible = true
+                isLoginPageVisible = false
+                logInPage?.visibility = View.GONE
+                registerPage?.visibility = View.VISIBLE
+            }
+        })
+
         register?.setOnClickListener {
-            logInPage?.visibility = View.GONE
-            registerPage?.visibility = View.VISIBLE
-            isRegisterUIVisible = true
-            isLoginUIVisible = false
-//            observeLiveData(btnCreateAcc,emailRegister,passwordRegister,loading,LogInMode.Register)
+            loginViewModel.loginRegisterUIState(LoginPageState(
+                isLoginPageVisible = false,
+                isRegisterPageVisible = true
+            ))
         }
 
         signIn?.setOnClickListener {
-            registerPage?.visibility = View.GONE
-            logInPage?.visibility = View.VISIBLE
-            isLoginUIVisible = true
-            isRegisterUIVisible = false
-//            observeLiveData(login, email, password, loading, LogInMode.SignIn)
+            loginViewModel.loginRegisterUIState(LoginPageState(
+                isLoginPageVisible = true,
+                isRegisterPageVisible = false
+            ))
         }
 
 //        observeLiveData(login,email,password,loading,LogInMode.SignIn)
@@ -397,6 +441,30 @@ class LoginActivity : AppCompatActivity() {
                 registerNewUser(emailRegister.text.toString(),passwordRegister.text.toString())
             }
         }
+
+        callbackManager = CallbackManager.Factory.create()
+        LoginManager.getInstance().registerCallback(callbackManager,object:FacebookCallback<com.facebook.login.LoginResult>{
+            override fun onCancel() {
+                Log.d("TAG", "facebook:onCancel")
+            }
+
+            override fun onError(error: FacebookException) {
+                Log.d("TAG", "facebook:onError", error)
+            }
+
+            override fun onSuccess(result: com.facebook.login.LoginResult ) {
+                Log.d("TAG", "facebook:onSuccess:$result")
+                handleFacebookAccessToken(result.accessToken)
+            }
+
+        })
+
+
+        btnFacebookSignIn?.setOnClickListener {
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"))
+
+        }
+
 
 
        /* loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
@@ -522,6 +590,28 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.register(emailRegister.text.toString(), passwordRegister.text.toString())
             }
         }*/
+
+    }
+
+    private fun handleFacebookAccessToken(accessToken: AccessToken) {
+        Log.d("TAG", "handleFacebookAccessToken:$accessToken")
+
+        val credential = FacebookAuthProvider.getCredential(accessToken.token)
+        firebaseAuth?.signInWithCredential(credential)
+            ?.addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("TAG", "signInWithCredential:success")
+                    val user = firebaseAuth?.currentUser
+                    updateUI(user,UserLogInMode.SignIn(LoginMode.FACEBOOK))
+
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("TAG", "signInWithCredential:failure", task.exception)
+                    Toast.makeText(this@LoginActivity, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
 
     }
 

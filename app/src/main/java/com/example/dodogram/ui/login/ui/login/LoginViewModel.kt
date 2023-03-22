@@ -4,14 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
+import androidx.lifecycle.liveData
 import com.example.dodogram.R
 import com.example.dodogram.ui.login.data.LoginRepository
 import com.example.dodogram.ui.login.data.Result
+import com.example.dodogram.ui.login.data.model.LoginPageState
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
+
+    private val _loginRegisterUiState = MutableLiveData<LoginPageState>()
+    val loginRegisterUiState:LiveData<LoginPageState> = _loginRegisterUiState
+
+    val liveData:LiveData<LoginFormState> = liveData {
+        this.latestValue
+
+    }
 
     private val _registerForm = MutableLiveData<LoginFormState>()
     val registerFormState: LiveData<LoginFormState> = _registerForm
@@ -22,6 +32,10 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
     private val _registerResult = MutableLiveData<RegisterResult>()
     val registerResult:LiveData<RegisterResult> = _registerResult
+
+    fun loginRegisterUIState(uiState:LoginPageState){
+        _loginRegisterUiState.value = uiState
+    }
 
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job

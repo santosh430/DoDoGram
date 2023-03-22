@@ -1,4 +1,4 @@
-package com.example.dodogram
+package com.example.dodogram.enums
 
 enum class LoginMode{
     GOOGLE,

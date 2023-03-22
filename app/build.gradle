@@ -2,11 +2,14 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id 'kotlin-android-extensions'
 }
 
 android {
     compileSdk 32
-
+    androidExtensions {
+        experimental = true
+    }
     defaultConfig {
         applicationId "com.example.dodogram"
         minSdk 21
@@ -61,7 +64,13 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-auth'
 
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    implementation 'com.google.firebase:firebase-storage-ktx'
+
     // Also add the dependency for the Google Play services library and specify its version
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
 
+    //facebook
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
 }
