@@ -1,0 +1,7 @@
+# make proper structure of database for the firebase storage so that user data is stored acc.
+  to the existing user or the new user.
+# during login process check if the user is existing or not. if it is existing then
+  retrieves its data and proceed to the main screen.
+  If the user is new then insert its data to the fire store and then proceed to the main screen.
+# retrieve user email and phone number through graph library in fb authentication.
+# insert code of firebase auth in proper mvvm architecture.
