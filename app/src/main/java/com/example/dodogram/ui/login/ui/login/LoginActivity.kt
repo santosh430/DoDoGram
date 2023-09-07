@@ -44,6 +44,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.*
 import java.util.*
+import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
 
@@ -55,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
     private var signUpRequest: BeginSignInRequest? = null
     private var callbackManager:CallbackManager? = null
     private var showOneTapUI = true
+    @Inject lateinit var mViewModel:LoginViewModel
 
     private val facebookResultContracts = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         it.resultCode

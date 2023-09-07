@@ -9,8 +9,9 @@ import com.example.dodogram.R
 import com.example.dodogram.ui.login.data.LoginRepository
 import com.example.dodogram.ui.login.data.Result
 import com.example.dodogram.ui.login.data.model.LoginPageState
+import javax.inject.Inject
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel @Inject constructor (private val loginRepository: LoginRepository) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm

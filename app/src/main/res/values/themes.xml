@@ -19,7 +19,11 @@
         <item name="navigationViewStyle">@style/customNavigationViewStyle</item>
         <item name="actionBarTheme">@style/Theme.DoDoGram.ActionBar</item>
         <item name="appBarLayoutStyle">@style/Widget.Design.AppBarLayout</item>
-
+        <item name="floatingActionButtonPrimaryStyle">@style/customFloatingAction</item>
+<!--        <item name="textInputStyle">@style/textInputStyle</item>-->
+        
+        
+        
     </style>
 
     <style name="customNavigationViewStyle" parent="Widget.Material3.NavigationView">
@@ -28,8 +32,15 @@
         <item name="itemActiveIndicatorStyle">@color/lightPrimaryColor</item>
 <!--        <item name="itemShapeFillColor">@color/lightPrimaryColor</item>-->
     </style>
+    
 
+    <style name="customFloatingAction" parent="Widget.Design.FloatingActionButton">
+        <item name="iconTint">?attr/colorPrimary</item>
+    </style>
+    
+    <style name="textInputStyle" parent="Widget.Design.TextInputLayout">
 
+    </style>
 
     <style name="Theme.DoDoGram.NoActionBar" parent="Theme.DoDoGram">
         <item name="actionBarTheme">@style/Theme.AppCompat.Light.NoActionBar</item>

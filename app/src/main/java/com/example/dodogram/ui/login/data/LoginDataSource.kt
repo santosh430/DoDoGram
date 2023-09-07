@@ -1,24 +1,25 @@
 package com.example.dodogram.ui.login.data
 
 import com.example.dodogram.ui.login.data.model.LoggedInUser
+import com.google.firebase.auth.FirebaseAuth
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
-class LoginDataSource {
+class LoginDataSource @Inject constructor() {
 
     fun login(username: String, password: String): Result<LoggedInUser> {
-        try {
-            // TODO: handle loggedInUser authentication
-            val fakeUser = LoggedInUser(java.util.UUID.randomUUID().toString(), username)
-            return Result.Success(fakeUser)
+        return try {
+            val user = LoggedInUser(java.util.UUID.randomUUID().toString(), username)
+            Result.Success(user)
         } catch (e: Throwable) {
-            return Result.Error(IOException("Error logging in", e))
+            Result.Error(IOException("Error logging in", e))
         }
     }
 
     fun logout() {
-        // TODO: revoke authentication
+        FirebaseAuth.getInstance().signOut()
     }
 }

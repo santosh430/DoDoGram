@@ -21,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 
 class MainActivity : AppCompatActivity() {
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity() {
     private fun insertUserCredentialsToFirebase(user: FirebaseUser, userLogInMode: UserLogInMode) {
         val firebaseStorageReference = Firebase.firestore
 
-        val data = UserCredentials(user.uid,user.displayName,user.photoUrl,user.phoneNumber,user.email)
+        val data = UserCredentials(user.uid,user.displayName,user.photoUrl,user.phoneNumber,user.email,Calendar.getInstance().timeInMillis)
         val uploadUserLoginMode = firebaseStorageReference.collection(user.uid)
             .document("UserLoginMode").set(userLogInMode)
             .addOnFailureListener {
