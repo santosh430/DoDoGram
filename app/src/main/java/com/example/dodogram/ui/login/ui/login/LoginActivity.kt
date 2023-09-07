@@ -315,6 +315,7 @@ class LoginActivity : AppCompatActivity() {
         login.isEnabled = true
         btnCreateAcc.isEnabled = true
 
+
         btnGoogleSignIn?.setOnClickListener {
             if (isLoginPageVisible){
                 loaderLoginPage.visibility = View.VISIBLE
