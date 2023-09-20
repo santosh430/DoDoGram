@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.dodogram">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
@@ -24,13 +23,13 @@
         android:theme="@style/Theme.DoDoGram"
         tools:targetApi="31">
         <activity
-            android:name=".ui.rescue.activity.RescueActivity"
+            android:name=".presentation.ui.rescue.RescueActivity"
             android:exported="false"
             android:theme="@style/Theme.DoDoGram.NoActionBar"
             android:label="@string/title_activity_rescue"
             />
         <activity
-            android:name=".ui.login.ui.login.LoginActivity"
+            android:name=".presentation.ui.login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.DoDoGram.NoActionBar"/>

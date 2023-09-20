@@ -7,29 +7,29 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.dodogram.ui.home.HomeFragment"
+        android:name="com.example.dodogram.presentation.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.dodogram.ui.rescue.RescueFragment"
+        android:name="com.example.dodogram.presentation.ui.rescue.RescueFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_rescue" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.dodogram.ui.notifications.NotificationsFragment"
+        android:name="com.example.dodogram.presentation.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/navigation_reels"
-        android:name="com.example.dodogram.ui.reels.ReelsFragment"
+        android:name="com.example.dodogram.presentation.ui.reels.ReelsFragment"
         android:label="Reels"
         tools:layout="@layout/fragment_reels"/>
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.dodogram.ui.profile.ProfileFragment"
+        android:name="com.example.dodogram.presentation.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>
