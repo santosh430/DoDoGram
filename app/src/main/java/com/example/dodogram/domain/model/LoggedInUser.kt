@@ -1,9 +1,9 @@
 package com.example.dodogram.domain.model
 
 /**
- * Data class that captures user information for logged in users retrieved from LoginRepository
+ * Data class that captures user information for logged in users retrieved from EmailLoginRepository
  */
 data class LoggedInUser(
-    val userId: String,
-    val displayName: String
+    val userId: String?,
+    val displayName: String?
 )

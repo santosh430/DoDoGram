@@ -3,7 +3,8 @@ package com.example.dodogram.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.dodogram.domain.usecase.LoginDataSource
-import com.example.dodogram.data.repository.LoginRepository
+import com.example.dodogram.data.repository.login.EmailLoginRepository
+import com.google.firebase.auth.FirebaseAuth
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -15,9 +16,7 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(
-                loginRepository = LoginRepository(
-                    dataSource = LoginDataSource()
-                )
+                emailLoginRepository = EmailLoginRepository(firebaseAuth = FirebaseAuth.getInstance())
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

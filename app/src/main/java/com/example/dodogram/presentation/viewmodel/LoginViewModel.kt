@@ -6,16 +6,17 @@ import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import androidx.lifecycle.liveData
 import com.example.dodogram.R
-import com.example.dodogram.data.repository.LoginRepository
+import com.example.dodogram.data.repository.login.EmailLoginRepository
 import com.example.dodogram.core.common.Result
 import com.example.dodogram.domain.model.LoggedInUserView
 import com.example.dodogram.domain.model.LoginPageState
 import com.example.dodogram.presentation.state.LoginFormState
 import com.example.dodogram.domain.model.LoginResult
 import com.example.dodogram.domain.model.RegisterResult
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor (private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel @Inject constructor (private val emailLoginRepository: EmailLoginRepository) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -42,16 +43,22 @@ class LoginViewModel @Inject constructor (private val loginRepository: LoginRepo
         _loginRegisterUiState.value = uiState
     }
 
-    fun login(username: String, password: String) {
+    suspend fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
-
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
+        val result = emailLoginRepository.login(username, password)
+        result.onEach {
+            when(it){
+                is Result.Error -> TODO()
+                is Result.Success -> _loginResult.value = LoginResult(success = LoggedInUserView(displayName = it.data.displayName!!))
+            }
         }
+
+//        if (result is Result.Success) {
+//            _loginResult.value =
+//                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
+//        } else {
+//            _loginResult.value = LoginResult(error = R.string.login_failed)
+//        }
     }
 
     fun loginDataChanged(username: String, password: String) {
@@ -66,14 +73,14 @@ class LoginViewModel @Inject constructor (private val loginRepository: LoginRepo
 
     fun register(username: String, password: String) {
         // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
+        val result = emailLoginRepository.login(username, password)
 
-        if (result is Result.Success) {
-            _registerResult.value =
-                RegisterResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _registerResult.value = RegisterResult(error = R.string.login_failed)
-        }
+//        if (result is Result.Success) {
+//            _registerResult.value =
+//                RegisterResult(success = LoggedInUserView(displayName = result.data.displayName))
+//        } else {
+//            _registerResult.value = RegisterResult(error = R.string.login_failed)
+//        }
     }
 
     fun registerDataChanged(username: String, password: String) {

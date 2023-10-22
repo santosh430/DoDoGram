@@ -44,6 +44,9 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -688,17 +691,22 @@ class LoginActivity : AppCompatActivity() {
                 setOnEditorActionListener { _, actionId, _ ->
                     when (actionId) {
                         EditorInfo.IME_ACTION_DONE ->
-                            loginViewModel.login(
-                                email.text.toString(),
-                                password.text.toString()
-                            )
+                            CoroutineScope(Dispatchers.Main).launch {
+                                loginViewModel.login(
+                                    email.text.toString(),
+                                    password.text.toString()
+                                )
+                            }
+
                     }
                     false
                 }
 
                 login.setOnClickListener {
                     loading.visibility = View.VISIBLE
-                    loginViewModel.login(email.text.toString(), password.text.toString())
+                    CoroutineScope(Dispatchers.Main).launch {
+                        loginViewModel.login(email.text.toString(), password.text.toString())
+                    }
                 }
             }
         }else if (loginMode == LogInMode.Register){
