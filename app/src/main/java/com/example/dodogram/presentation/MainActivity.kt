@@ -16,24 +16,33 @@ import com.example.dodogram.core.utils.enums.LoginMode
 import com.example.dodogram.domain.model.UserCredentials
 import com.example.dodogram.core.common.UserLogInMode
 import com.example.dodogram.core.utils.AppSharedPreferences
+import com.example.dodogram.di.component.DaggerMyApplicationComponent
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var firebaseStorageReference:FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        val daggerComponent = DaggerMyApplicationComponent.builder().build()
+        daggerComponent.injectMainActivity(this)
+
 
         val user = intent.getParcelableExtra<FirebaseUser>("loginData")
         user?.let {
@@ -94,7 +103,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun insertUserCredentialsToFirebase(user: FirebaseUser, userLogInMode: UserLogInMode) {
-        val firebaseStorageReference = Firebase.firestore
 
         val data = UserCredentials(user.uid,user.displayName,user.photoUrl,user.phoneNumber,user.email,Calendar.getInstance().timeInMillis)
         val uploadUserLoginMode = firebaseStorageReference.collection(user.uid)
