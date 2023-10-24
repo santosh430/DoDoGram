@@ -5,5 +5,3 @@
   If the user is new then insert its data to the fire store and then proceed to the main screen.
 # retrieve user email and phone number through graph library in fb authentication.
 # insert code of firebase auth in proper mvvm architecture.
-
-#test comment on TODO
